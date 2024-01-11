@@ -1,7 +1,7 @@
 {
-  "name": "react-native-ui-lib",
-  "version": "7.0.0",
-  "main": "src/index.ts",
+  "name": "@9temare/react-native-ui-lib",
+  "version": "7.0.3",
+  "main": "src/index.js",
   "types": "src/index.d.ts",
   "author": "Ethan Sharabi <ethan.shar@gmail.com>",
   "homepage": "https://github.com/wix/react-native-ui-lib",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wix/react-native-ui-lib"
+    "url": "git+https://github.com/wix/react-native-ui-lib.git"
   },
   "scripts": {
     "start": "watchman watch-del-all && export DEV_MODE=true && react-native start",
@@ -149,5 +149,13 @@
     "fakeTimers": {
       "legacyFakeTimers": true
     }
+  },
+  "description": "[![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct.svg)](https://stand-with-ukraine.pp.ua)",
+  "bugs": {
+    "url": "https://github.com/wix/react-native-ui-lib/issues"
+  },
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
   }
 }

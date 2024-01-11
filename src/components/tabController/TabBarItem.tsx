@@ -1,12 +1,11 @@
 // TODO: support commented props
-import React, {useCallback, useContext, useEffect, useRef, useMemo, ReactElement} from 'react';
-import {StyleSheet, TextStyle, LayoutChangeEvent, StyleProp, ViewStyle, TextProps} from 'react-native';
 import _ from 'lodash';
-import Reanimated, {runOnJS, useAnimatedStyle, useSharedValue} from 'react-native-reanimated';
+import React, {ReactElement, useCallback, useContext, useEffect, useMemo, useRef} from 'react';
+import {LayoutChangeEvent, StyleProp, StyleSheet, TextProps, TextStyle, ViewStyle} from 'react-native';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-import {Colors, Typography, Spacings} from '../../style';
+import Reanimated, {runOnJS, useAnimatedStyle, useSharedValue} from 'react-native-reanimated';
+import {Colors, Spacings, Typography} from '../../style';
 import Badge, {BadgeProps} from '../badge';
-import View from '../view';
 import TabBarContext from './TabBarContext';
 
 const DEFAULT_LABEL_COLOR = Colors.$textDefault;
@@ -24,7 +23,7 @@ export interface TabControllerItemProps {
   /**
    * Extra label props to pass to label Text element
    */
-  labelProps?: Omit<TextProps, 'style'> ;
+  labelProps?: Omit<TextProps, 'style'>;
   /**
    * custom selected label style
    */
@@ -103,8 +102,7 @@ export interface TabControllerItemProps {
 interface Props extends TabControllerItemProps {
   index: number;
   targetPage: any; // TODO: typescript?
-  // @ts-expect-error should be fixed in version 3.5 (https://github.com/software-mansion/react-native-reanimated/pull/4881)
-  currentPage: Reanimated.Adaptable<number>;
+  currentPage: number;
   onLayout?: (event: LayoutChangeEvent, index: number) => void;
 }
 
@@ -149,22 +147,40 @@ export default function TabBarItem({
 
   useEffect(() => {
     if (props.width) {
-      props.onLayout?.({nativeEvent: {layout: {x: 0, y: 0, width: itemWidth.current, height: 0}}} as LayoutChangeEvent,
-        index);
+      props.onLayout?.(
+        {nativeEvent: {layout: {x: 0, y: 0, width: itemWidth.current, height: 0}}} as LayoutChangeEvent,
+        index
+      );
     }
   }, []);
 
-  const onLayout = useCallback((event: LayoutChangeEvent) => {
-    const {width} = event.nativeEvent.layout;
+  const onLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const {width} = event.nativeEvent.layout;
 
-    if (!itemWidth.current && itemRef?.current) {
-      itemWidth.current = width;
-      // @ts-ignore
-      itemRef.current?.setNativeProps?.({style: {width, paddingHorizontal: null, flex: null}});
-      props.onLayout?.(event, index);
-    }
-  },
-  [index, props.onLayout]);
+      if (!itemWidth.current && itemRef?.current) {
+        itemWidth.current = width;
+        // @ts-ignore
+        itemRef.current?.setNativeProps?.({style: {width, paddingHorizontal: null, flex: null}});
+        props.onLayout?.(event, index);
+      }
+    },
+    [index, props.onLayout]
+  );
+
+  const animatedTabItemStyle = useAnimatedStyle(() => {
+    const isActive = currentPage.value === index;
+    return {
+      backgroundColor: isActive ? '#63a0e3' : 'white',
+      borderRadius: 20,
+      height: '80%',
+      paddingHorizontal: 4,
+      marginHorizontal: 4,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    };
+  }, [currentPage]);
 
   const animatedLabelStyle = useAnimatedStyle(() => {
     const isActive = currentPage.value === index;
@@ -185,17 +201,17 @@ export default function TabBarItem({
     };
   });
 
-  const pressStyle = useAnimatedStyle(() => {
-    return {
-      backgroundColor: isPressed.value ? activeBackgroundColor : backgroundColor,
-      opacity: isPressed.value ? activeOpacity : 1
-    };
-  });
+  // const pressStyle = useAnimatedStyle(() => {
+  //   return {
+  //     backgroundColor: isPressed.value ? activeBackgroundColor : backgroundColor,
+  //     opacity: isPressed.value ? activeOpacity : 1
+  //   };
+  // });
 
-  const _style = useMemo(() => {
-    const constantWidthStyle = itemWidth.current ? {flex: 0, width: itemWidth.current} : undefined;
-    return [styles.tabItem, style, constantWidthStyle, pressStyle];
-  }, [style]);
+  // const _style = useMemo(() => {
+  //   const constantWidthStyle = itemWidth.current ? {flex: 0, width: itemWidth.current} : undefined;
+  //   return [styles.tabItem, style, constantWidthStyle, pressStyle];
+  // }, [style]);
 
   const gesture = Gesture.Tap()
     .maxDuration(60000)
@@ -215,11 +231,12 @@ export default function TabBarItem({
 
   return (
     <GestureDetector gesture={gesture}>
-      <View
+      <Reanimated.View
         reanimated
         // @ts-expect-error
         ref={itemRef}
-        style={_style}
+        // style={_style}
+        style={animatedTabItemStyle}
         onLayout={onLayout}
         testID={testID}
       >
@@ -240,10 +257,10 @@ export default function TabBarItem({
           </Reanimated.Text>
         )}
         {badge && (
-          <Badge backgroundColor={Colors.$backgroundDangerHeavy} size={20} {...badge} containerStyle={styles.badge}/>
+          <Badge backgroundColor={Colors.$backgroundDangerHeavy} size={20} {...badge} containerStyle={styles.badge} />
         )}
         {trailingAccessory}
-      </View>
+      </Reanimated.View>
     </GestureDetector>
   );
 }
