@@ -171,7 +171,7 @@ export default function TabBarItem({
   const animatedTabItemStyle = useAnimatedStyle(() => {
     const isActive = currentPage.value === index;
     return {
-      backgroundColor: isActive ? '#63a0e3' : 'white',
+      backgroundColor: isActive ? activeBackgroundColor : backgroundColor,
       borderRadius: 20,
       height: '80%',
       paddingHorizontal: 4,
