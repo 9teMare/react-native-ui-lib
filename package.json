@@ -1,17 +1,17 @@
 {
   "name": "@9temare/react-native-ui-lib",
-  "version": "7.0.3",
+  "version": "7.0.5",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "author": "Ethan Sharabi <ethan.shar@gmail.com>",
-  "homepage": "https://github.com/wix/react-native-ui-lib",
+  "homepage": "https://github.com/9temare/react-native-ui-lib",
   "license": "MIT",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wix/react-native-ui-lib.git"
+    "url": "git+https://github.com/9temare/react-native-ui-lib.git"
   },
   "scripts": {
     "start": "watchman watch-del-all && export DEV_MODE=true && react-native start",
